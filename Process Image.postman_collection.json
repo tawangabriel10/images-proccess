@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "e4493129-ed9a-4b67-94e9-29e2208e3a6c",
+		"name": "Process Image",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Tawan\",\n    \"email\": \"tawan.souza@bix.bom\",\n    \"password\": \"12345\",\n    \"plan\": \"PLAN_BASIC\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"tawan.souza@bix.com\",\n    \"pass\": \"12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find All Images",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0YXdhbi5zb3V6YUBiaXguY29tIiwidXNlciI6IntcImlkXCI6XCI2N2RhZTI3ODhmMWQzNjIxOWRiM2JkZTFcIixcIm5hbWVcIjpcIlRhd2FuXCIsXCJlbWFpbFwiOlwidGF3YW4uc291emFAYml4LmNvbVwifSIsImF1dGhvcml0aWVzIjoiUExBTl9CQVNJQyIsImlhdCI6MTc0MjU3ODUxMSwiZXhwIjoxNzQzMTgzMzExfQ.rj3C0hlM7i7OpvEMu9ouq7iV-OYwCP0Mvidrt_6LeI8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/image?name=porsche&pageNumber=0&pageSize=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"image"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "porsche"
+						},
+						{
+							"key": "pageNumber",
+							"value": "0"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
