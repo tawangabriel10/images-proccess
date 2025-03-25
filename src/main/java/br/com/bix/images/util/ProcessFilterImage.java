@@ -3,9 +3,10 @@ package br.com.bix.images.util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 
-public class ProcessFilterImage {
+public final class ProcessFilterImage {
+
+    private ProcessFilterImage() {}
 
     public static BufferedImage resize(BufferedImage image, int newWidth, int newHeight) {
         if (newWidth < 1 || newHeight < 1) {

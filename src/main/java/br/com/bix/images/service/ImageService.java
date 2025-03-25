@@ -80,7 +80,6 @@ public class ImageService {
 
     public void process(@NonNull ProcessImageEvent event) {
         final ImageResponse imageResponse = findById(event.getImageId());
-
         event.setPath(imageResponse.getPath());
         processImageService.process(event);
     }

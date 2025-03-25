@@ -48,6 +48,7 @@ class ImageServiceTest {
     void givenProcessImageEvent_whenCallSave_thenSaveImage() {
         final SaveImageEvent saveImageEvent = Fixture.make(SaveImageEvent.builder().build());
         final UserResponse userResponse = Fixture.make(UserResponse.builder().build());
+        userResponse.setId("67e1c9292f2d3f2642af87a2");
         final ImageDocument imageDocument = Fixture.make(new ImageDocument());
 
         when(userService.findById(any())).thenReturn(userResponse);
@@ -122,8 +123,8 @@ class ImageServiceTest {
         when(modelMapper.map(any(), eq(ImageResponse.class))).thenReturn(imageResponse);
         doNothing().when(processImageService).process(any());
 
-        processImageService.process(processImageEvent);
-        verify(imageRepository).findById(IMAGE_ID);
+        imageService.process(processImageEvent);
+        verify(imageRepository).findById(processImageEvent.getImageId());
         verify(modelMapper).map(imageDocument, ImageResponse.class);
         verify(processImageService).process(processImageEvent);
     }

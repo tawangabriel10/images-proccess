@@ -14,6 +14,7 @@ public class SaveImageEvent {
     private String name;
     private String type;
     private String userId;
+    private String token;
     private ImageData imageData;
 
     @Data

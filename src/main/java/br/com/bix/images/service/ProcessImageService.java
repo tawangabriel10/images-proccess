@@ -1,13 +1,17 @@
 package br.com.bix.images.service;
 
+import static br.com.bix.images.util.Constants.MESSAGE_PROCESS_IMAGE;
 import static br.com.bix.images.util.Constants.PATH_TO_SAVE_IMAGE;
+import static br.com.bix.images.util.Constants.SUBJECT_PROCESS_IMAGE;
 
+import br.com.bix.images.api.rest.model.UserResponse;
 import br.com.bix.images.api.stream.model.ProcessImageEvent;
 import br.com.bix.images.api.stream.model.SaveImageEvent;
+import br.com.bix.images.service.model.BusinessException;
+import br.com.bix.images.util.EmailUtil;
 import br.com.bix.images.util.ProcessFilterImage;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import javax.imageio.ImageIO;
@@ -21,6 +25,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProcessImageService {
 
+    private final EmailUtil emailUtil;
+    private final UserService userService;
+
     public String save(@NonNull SaveImageEvent event, String userId) {
         try {
             final String filename = PATH_TO_SAVE_IMAGE + userId + "_" + event.getName();
@@ -29,23 +36,28 @@ public class ProcessImageService {
             FileUtils.writeByteArrayToFile(file, Base64.getDecoder().decode(event.getImageData().getData()));
             return filename;
         } catch(IOException ex) {
-            return null;
+            throw new BusinessException("Failed to upload image: " + ex.getMessage());
         }
     }
 
     public void process(@NonNull ProcessImageEvent event) {
-        File file = new File(event.getPath());
-        BufferedImage image = null;
         try {
-            image = ImageIO.read(file);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex.getMessage());
-        }
+            File file = new File(event.getPath());
+            BufferedImage image = ImageIO.read(file);
 
+            BufferedImage newImage = applyUpdateImage(event, image);
+            ImageIO.write(newImage, "jpeg", file);
+
+            final UserResponse userResponse = userService.findById(event.getUserId());
+            emailUtil.sendSimpleMessage(userResponse.getEmail(), SUBJECT_PROCESS_IMAGE, MESSAGE_PROCESS_IMAGE);
+        } catch (IOException ex) {
+            throw new BusinessException("Failed to update image: %s, message: %s" + ex.getMessage());
+        }
+    }
+
+    private BufferedImage applyUpdateImage(ProcessImageEvent event, BufferedImage image) {
         BufferedImage newImage = null;
         switch (event.getAction()) {
-            case ORIGINAL:
-                break;
             case RESIZE:
                 newImage = ProcessFilterImage.resize(image, 400, 400);
                 break;
@@ -56,13 +68,8 @@ public class ProcessImageService {
                 newImage = ProcessFilterImage.gray(image);
                 break;
             default:
-                throw new RuntimeException();
+                throw new BusinessException("Action not found: " + event.getAction());
         }
-
-        try {
-            ImageIO.write(newImage, "jpeg", file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return newImage;
     }
 }

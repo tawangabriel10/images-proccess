@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Optional;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,7 +100,7 @@ public class JwtTokenProvider {
             final UserDocument userDocument = new ObjectMapper().readValue(gsonAuth, UserDocument.class);
             return new UsernamePasswordAuthenticationToken(userDocument, token, authorities);
         } catch (Exception e) {
-            throw new BadCredentialsException("Erro durante autenticação", e);
+            throw new BadCredentialsException("Invalid authetication", e);
         }
     }
 

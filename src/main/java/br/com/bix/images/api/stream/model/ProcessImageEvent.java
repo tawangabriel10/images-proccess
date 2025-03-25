@@ -15,6 +15,8 @@ public class ProcessImageEvent {
     private String imageId;
     private ProcessAction action;
     private String path;
+    private String userId;
+    private String token;
 
     @Getter
     @AllArgsConstructor
